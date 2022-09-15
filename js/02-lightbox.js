@@ -1,8 +1,7 @@
-import { galleryItems } from './gallery-items.js';
-import SimpleLightbox from '../node_modules/simplelightbox/dist/simple-lightbox.esm.js'
+import { galleryItems } from "./gallery-items.js";
+
 // Change code below this line
-console.log(SimpleLightbox);
-console.log(galleryItems);
+
 
 const galleryRef = document.querySelector(".gallery");
 
@@ -13,7 +12,6 @@ const markup = galleryItems
   )
   .join("");
 galleryRef.insertAdjacentHTML("afterbegin", markup);
-
 
 const lightbox = new SimpleLightbox(".gallery a", {
   captionType: "attr",

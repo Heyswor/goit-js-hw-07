@@ -5,12 +5,6 @@ import { galleryItems } from "./gallery-items.js";
 // console.log(galleryItems);
 
 const galleryRef = document.querySelector(".gallery");
-const instance = basicLightbox.create(`
-    <div class="modal">
-    <img>
-    </div>
-`);
-const modalEl = instance.element();
 
 const markup = galleryItems
   .map(
@@ -20,38 +14,34 @@ const markup = galleryItems
   .join("");
 galleryRef.insertAdjacentHTML("afterbegin", markup);
 
+const imagesRef = document.querySelectorAll(".gallery img");
+
 const onImageClick = (event) => {
   const { target } = event;
 
-  if (target.nodeName !== "IMG") {
-    return;
-  }
-
-  galleryItems.map((element) => {
-    if (target.alt === element.description) {
-      instance.show(() => {
-        const bigImg = modalEl.querySelector("img");
-        bigImg.classList = "modalImg";
-        bigImg.src = target.dataset.source;
-        bigImg.alt = target.alt;
-        if (modalEl) {
-          modalEl.addEventListener("click", (event) => {
-            instance.close(() => {
-              event.target.src.remove();
-            });
-          });
-        }
-      });
+  imagesRef.forEach((image) => {
+    if (image.getAttribute("alt") === target.alt) {
+      const instance = basicLightbox.create(`
+    <div class="modal">
+    <img src='${image.getAttribute("data-source")}' alt='${image.getAttribute(
+        "alt"
+      )}'>
+    </div>
+`);
+      instance.show();
+      const modalEl = instance.element();
+      if (modalEl) {
+        modalEl.addEventListener("click", (event) => {
+          instance.close();
+        });
+        document.addEventListener("keydown", (escape) => {
+          if (escape.key === "Escape") {
+            instance.close();
+          }
+        });
+      }
     }
   });
 };
-
-document.addEventListener("keydown", (escape) => {
-  if (escape.key === "Escape") {
-    instance.close(() => {
-      target.remove();
-    });
-  }
-});
 
 galleryRef.addEventListener("click", onImageClick);
